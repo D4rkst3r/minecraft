@@ -60,7 +60,7 @@ end
 
 local function displayOnMonitor(monitor, matrixData, matrixName)
     local mon = peripheral.wrap(monitor)
-    if not mon then return end
+    if not mon then return end -- Wichtige Überprüfung, falls Monitor nicht mehr existiert.
 
     mon.clear()
     mon.setTextScale(1)
@@ -143,16 +143,20 @@ local function displayOnMonitor(monitor, matrixData, matrixName)
 
     -- Zeit bis voll/leer
     y = y + 2
-    if netRate > 0 and matrixData.energy < matrixData.maxEnergy then
-        local timeToFull = (matrixData.maxEnergy - matrixData.energy) / netRate / 20 -- /20 für Sekunden
-        mon.setCursorPos(1, y)
-        mon.setTextColor(colors.cyan)
-        mon.write(string.format("Voll in: %.1f min", timeToFull / 60))
-    elseif netRate < 0 and matrixData.energy > 0 then
-        local timeToEmpty = matrixData.energy / math.abs(netRate) / 20
-        mon.setCursorPos(1, y)
-        mon.setTextColor(colors.red)
-        mon.write(string.format("Leer in: %.1f min", timeToEmpty / 60))
+    -- Nur anzeigen, wenn die Netto-Rate nicht Null ist
+    if netRate ~= 0 and matrixData.energy < matrixData.maxEnergy and matrixData.energy > 0 then
+        local timeInSeconds
+        if netRate > 0 then
+            timeInSeconds = (matrixData.maxEnergy - matrixData.energy) / netRate / 20
+            mon.setCursorPos(1, y)
+            mon.setTextColor(colors.cyan)
+            mon.write(string.format("Voll in: %.1f min", timeInSeconds / 60))
+        elseif netRate < 0 then
+            timeInSeconds = matrixData.energy / math.abs(netRate) / 20
+            mon.setCursorPos(1, y)
+            mon.setTextColor(colors.red)
+            mon.write(string.format("Leer in: %.1f min", timeInSeconds / 60))
+        end
     end
 
     -- Timestamp
@@ -177,6 +181,7 @@ local function main()
     print("Starte Mekanism Induction Matrix Monitor...")
 
     while true do
+        -- WICHTIG: Peripheriegeräte bei jedem Durchlauf neu suchen
         local matrices, monitors = findPeripherals()
 
         if #matrices == 0 then
@@ -195,6 +200,7 @@ local function main()
                     local monitorName = monitors[monitorIndex]
 
                     displayOnMonitor(monitorName, data, matrixName)
+                    -- Ausgabe in der Konsole
                     print(string.format("Matrix %s: %s / %s (%.1f%%)",
                         matrixName,
                         formatEnergy(data.energy),

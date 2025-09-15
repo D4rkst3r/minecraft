@@ -9,7 +9,7 @@ local function findPeripherals()
     for name, type in pairs(peripheral.getNames()) do
         if type == "induction_matrix" or string.find(type, "induction_casing") then
             table.insert(matrices, name)
-        elseif pType == "monitor" then
+        elseif type == "monitor" then
             table.insert(monitors, name)
         end
     end

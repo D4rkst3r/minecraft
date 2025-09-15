@@ -1,13 +1,13 @@
 -- Mekanism Induction Matrix Monitor
 -- Für CC: Tweaked
--- Autor: [D4rkst3r]
+-- Autor: [Dein Name]
 
 local function findPeripherals()
     local matrices = {}
     local monitors = {}
 
     for name, type in pairs(peripheral.getNames()) do
-        if type == "induction_matrix" then
+        if type == "induction_matrix" or string.find(type, "induction_casing") then
             table.insert(matrices, name)
         elseif type == "monitor" then
             table.insert(monitors, name)

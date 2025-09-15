@@ -199,7 +199,7 @@ sleep(5) -- Langsamere Updates (5 Sekunden)
 Um das Programm zu aktualisieren:
 
 ```lua
-shell.run("wget", "https://raw.githubusercontent.com/DEIN_USERNAME/minecraft-induction-monitor/main/induction_monitor.lua", "induction_monitor")
+shell.run("wget", "https://raw.githubusercontent.com/D4rkst3r/minecraft/main/induction_monitor.lua", "induction_monitor")
 ```
 
 ## 📚 Weitere Features (Erweiterbar)
